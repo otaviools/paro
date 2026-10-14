@@ -1,0 +1,187 @@
+@import "@fontsource-variable/manrope/wght.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "tailwindcss";
+@import "@nuxt/ui";
+@import "../../../marca/tokens/paro.css";
+
+@theme static {
+  --font-sans: "Manrope Variable", "Manrope", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --tracking-etiqueta: 0.145em;
+  --text-hero: 56px;
+  --text-hero--line-height: 1;
+  --text-percentual: 48px;
+  --text-percentual--line-height: 1;
+  --text-kpi: 40px;
+  --text-kpi--line-height: 1.1;
+  --text-numero: 28px;
+  --text-numero--line-height: 1.15;
+  --text-titulo: 26px;
+  --text-titulo--line-height: 1.2;
+  --text-stat: 22px;
+  --text-stat--line-height: 1.25;
+  --text-botao: 18px;
+  --text-botao--line-height: 1.3;
+  --text-card: 17px;
+  --text-card--line-height: 1.35;
+  --text-destaque: 16px;
+  --text-destaque--line-height: 1.4;
+  --text-corpo: 15px;
+  --text-corpo--line-height: 1.45;
+  --text-interface: 14px;
+  --text-interface--line-height: 1.45;
+  --text-legenda: 13px;
+  --text-legenda--line-height: 1.45;
+  --text-nota: 12px;
+  --text-nota--line-height: 1.45;
+  --text-etiqueta: 11px;
+  --text-etiqueta--line-height: 1.4;
+  --text-mapa: 10px;
+  --text-mapa--line-height: 1.2;
+  --radius-badge: 8px;
+  --radius-botao: 10px;
+  --radius-alerta: 12px;
+  --radius-lista: 14px;
+  --radius-card: 16px;
+  --color-azul-50: #EEF4FF;
+  --color-azul-100: #DCE8FF;
+  --color-azul-200: #BCD4FF;
+  --color-azul-300: #8CB0EE;
+  --color-azul-400: #6EA8FF;
+  --color-azul-500: #3D74D6;
+  --color-azul-600: #2F5DB3;
+  --color-azul-700: #4F79BF;
+  --color-azul-800: #1E3A6E;
+  --color-azul-900: #182F57;
+  --color-azul-950: #0F1E38;
+  --color-asfalto-50: #FFFCF2;
+  --color-asfalto-100: #F3ECD4;
+  --color-asfalto-200: #E6DEC5;
+  --color-asfalto-300: #D9D3C0;
+  --color-asfalto-400: #A8A69C;
+  --color-asfalto-500: #75746E;
+  --color-asfalto-600: #5C5B55;
+  --color-asfalto-700: #47463F;
+  --color-asfalto-800: #3E3D37;
+  --color-asfalto-900: #32312C;
+  --color-asfalto-950: #22211D;
+}
+
+:root {
+  --app-texto-fraco: #615F59;
+  --app-texto-no-destaque: var(--paro-asfalto-fraco);
+  --app-segmento-escuro: #615F59;
+  --ui-primary: var(--ui-color-primary-600);
+  --ui-radius: 0.625rem;
+  --ui-bg: var(--paro-creme);
+  --ui-bg-muted: var(--paro-creme-suave);
+  --ui-bg-elevated: var(--paro-creme-card);
+  --ui-bg-accented: var(--paro-ceu-claro);
+  --ui-text: var(--paro-asfalto);
+  --ui-text-highlighted: var(--paro-asfalto);
+  --ui-text-muted: var(--app-texto-fraco);
+  --ui-text-dimmed: var(--paro-pedra);
+  --ui-text-toned: var(--paro-asfalto);
+  --ui-text-inverted: var(--paro-creme);
+  --ui-border: rgb(50 49 44 / 0.15);
+  --ui-border-muted: rgb(50 49 44 / 0.10);
+  --ui-border-accented: rgb(50 49 44 / 0.25);
+  --ui-bg-inverted: var(--paro-asfalto);
+  --app-grafico-destaque: var(--ui-primary);
+  --app-grafico-barra: var(--paro-azul-barra);
+  --app-grafico-segmento: var(--paro-azul-barra);
+  --app-grafico-ceu: var(--paro-ceu);
+  --app-grafico-neutro: var(--paro-creme-neutro);
+  --app-grafico-pedra: var(--paro-pedra);
+  --app-grafico-escuro: var(--app-segmento-escuro);
+  --app-grafico-trilha: var(--paro-creme-suave);
+}
+
+.dark {
+  --app-texto-fraco: #C4C2B8;
+  --app-texto-no-destaque: #BDBBB1;
+  --app-segmento-escuro: #A8A69C;
+  --ui-primary: var(--ui-color-primary-400);
+  --ui-bg: var(--paro-asfalto);
+  --ui-bg-muted: var(--paro-asfalto-suave);
+  --ui-bg-elevated: var(--paro-asfalto-card);
+  --ui-bg-accented: var(--paro-ceu-noite);
+  --ui-text: var(--paro-creme);
+  --ui-text-highlighted: var(--paro-creme);
+  --ui-text-muted: var(--app-texto-fraco);
+  --ui-text-dimmed: var(--paro-pedra-escura);
+  --ui-text-toned: var(--paro-creme);
+  --ui-text-inverted: var(--paro-asfalto);
+  --ui-border: rgb(255 249 227 / 0.15);
+  --ui-border-muted: rgb(255 249 227 / 0.10);
+  --ui-border-accented: rgb(255 249 227 / 0.25);
+  --ui-bg-inverted: var(--paro-creme);
+  --app-grafico-barra: var(--paro-azul-barra-escuro);
+  --app-grafico-segmento: var(--color-azul-800);
+  --app-grafico-ceu: var(--paro-ceu-noite);
+  --app-grafico-neutro: var(--paro-asfalto-neutro);
+  --app-grafico-pedra: var(--paro-pedra-escura);
+  --app-grafico-trilha: var(--paro-asfalto-suave);
+}
+
+@utility etiqueta {
+  font-size: var(--text-etiqueta);
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: var(--tracking-etiqueta);
+  text-transform: uppercase;
+}
+
+@utility superficie-destaque {
+  background-color: var(--paro-asfalto);
+  color: var(--paro-creme);
+}
+
+.dark .superficie-destaque {
+  background-color: var(--paro-asfalto-card);
+}
+
+body {
+  background-color: var(--ui-bg);
+  color: var(--ui-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+  O CSS do MapLibre força Helvetica/Arial em tudo dentro do mapa (rótulos das ruas,
+  marcador da referência, popups, atribuição). `div.` vence a ordem de carregamento dele.
+  Os nomes de rua do mapa base são glifos da CARTO em Montserrat, sans geométrica próxima da Manrope.
+*/
+div.maplibregl-map {
+  font-family: var(--font-sans);
+}
+
+.maplibregl-ctrl-attrib {
+  font-size: var(--text-nota);
+  background-color: var(--paro-mapa-controle) !important;
+  color: var(--ui-text-muted);
+}
+
+.maplibregl-ctrl-attrib a {
+  color: inherit;
+}
+
+/* Tudo que é clicável mostra a mãozinha (o preflight do Tailwind 4 deixa botões com a seta padrão). */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="switch"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([aria-disabled="true"]),
+  [role="option"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

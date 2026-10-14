@@ -1,0 +1,13 @@
+services:
+  banco:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: paro
+      POSTGRES_USER: paro
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - dados:/var/lib/postgresql/data
+volumes:
+  dados:
