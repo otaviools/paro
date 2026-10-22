@@ -104,7 +104,7 @@ As estimativas ficam na tabela `estimativas_da_pesquisa`. O `pnpm db:preparar` j
 | GPS a até 150 m da rua | +0,5 |
 | Relato dos últimos 20 minutos | × 3, e aparece como "relatado há N min" |
 
-Vale 1 relato por pessoa (ou aparelho) por rua por faixa de 30 minutos; um novo substitui o anterior. A tarefa `relatos:anonimizar` roda de hora em hora: compara cada relato com mais de 24 horas com a contagem de campo do mesmo dia e faixa (ou com o consenso de 3 relatos ou mais), ajusta a reputação de quem relatou e apaga o vínculo do relato com a pessoa e com o aparelho.
+Vale 1 relato por pessoa (ou aparelho) por rua por faixa de 30 minutos; um novo substitui o anterior. A tarefa `relatos:anonimizar` (de hora em hora no servidor Node; uma vez por dia no Vercel) compara cada relato com mais de 24 horas com a contagem de campo do mesmo dia e faixa (ou com o consenso de 3 relatos ou mais), ajusta a reputação de quem relatou e apaga o vínculo do relato com a pessoa e com o aparelho.
 
 ### Verificação de e-mail
 
@@ -144,3 +144,18 @@ Sem cadastro obrigatório, nome, telefone, CPF ou placa. O e-mail é opcional e 
 - Os traçados das ruas vêm do OpenStreetMap.
 - O mapa base usa o estilo Positron da CARTO, recolorido com os tokens `--paro-mapa-*`. Sem internet, o mapa mostra só o fundo e as ruas medidas.
 - "Lembrar de registrar a saída" e "Avisar quando eu sair" ficam salvos, mas ainda não disparam notificação nem viram medição anônima.
+
+## Deploy no Vercel
+
+O Vercel não roda as tarefas agendadas do Nitro. Elas são chamadas pelo Cron do Vercel, configurado em `vercel.json`, na rota protegida `/api/tarefas/[nome]`:
+
+| Tarefa | Rota | Horário (UTC) | Horário de Brasília |
+| --- | --- | --- | --- |
+| `relatos:anonimizar` | `/api/tarefas/relatos-anonimizar` | 06:15 | 03:15 |
+| `historico:limpar` | `/api/tarefas/historico-limpar` | 07:00 | 04:00 |
+
+1. Em Project → Settings → Environment Variables, crie `CRON_SECRET` com 16 caracteres aleatórios ou mais. O Vercel envia esse valor no cabeçalho `Authorization: Bearer …` de cada chamada do cron; sem ele, a rota responde 401.
+2. Faça um novo deploy para o Vercel ler o `vercel.json`. Os crons aparecem em Project → Settings → Cron Jobs, onde também dá para rodar cada um na hora ("Run").
+
+No plano gratuito (Hobby) o cron roda uma vez por dia, então o relato perde o vínculo com a pessoa entre 24 e 48 horas depois de enviado, como dizem os Termos.
+
