@@ -39,6 +39,8 @@ function montarFeicao(previsao: PrevisaoRua, trajetos: { id: string, trajeto: Li
       estado: previsao.estado,
       chance: formatarChance(previsao.chance),
       medidoEm: previsao.medidoEm,
+      confianca: previsao.confianca,
+      relatoRecente: previsao.relatoRecente,
     },
   }]
 }

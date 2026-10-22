@@ -1,0 +1,1 @@
+ALTER TABLE "ruas" ADD COLUMN "destino" jsonb;

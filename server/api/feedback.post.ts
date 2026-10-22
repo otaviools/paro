@@ -18,5 +18,5 @@ export default defineEventHandler(async (event) => {
 async function marcarNaVaga(event: Parameters<typeof dispositivoAtual>[0], vagaId: string, ajudou: boolean): Promise<void> {
   const dispositivoId = await dispositivoAtual(event)
   if (!dispositivoId) throw createError({ statusCode: 403, statusMessage: 'Esta vaga não é deste aparelho.' })
-  await useDb().update(vagas).set({ previsaoAjudou: ajudou }).where(and(eq(vagas.id, vagaId), eq(vagas.dispositivoId, dispositivoId)))
+  await useDb().update(vagas).set({ previsaoAjudou: ajudou }).where(and(eq(vagas.id, vagaId), vagaDoDono(dispositivoId)))
 }

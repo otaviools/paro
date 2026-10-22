@@ -1,17 +1,26 @@
-import { and, desc, eq, gte, isNotNull, isNull } from 'drizzle-orm'
-import { ruas, vagas } from '../db/schema'
+import { and, desc, eq, gte, inArray, isNotNull, isNull, or } from 'drizzle-orm'
+import { dispositivos, ruas, vagas } from '../db/schema'
 import { diaDaSemanaAtual, faixaDeTrintaMinutosAtual, horaLocal } from '../../shared/utils/horario'
 import type { RotinaNaRegiao, Vaga } from '../../shared/types/vaga'
 
 const UM_DIA_EM_MS = 24 * 60 * 60 * 1000
 const SEMANAS_DA_ROTINA = 4
 
+export function vagaDoDono(dispositivoId: string) {
+  const pessoaDoAparelho = useDb().select({ pessoaId: dispositivos.pessoaId }).from(dispositivos).where(eq(dispositivos.id, dispositivoId))
+  const aparelhosDaPessoa = useDb()
+    .select({ id: dispositivos.id })
+    .from(dispositivos)
+    .where(or(eq(dispositivos.id, dispositivoId), inArray(dispositivos.pessoaId, pessoaDoAparelho)))
+  return inArray(vagas.dispositivoId, aparelhosDaPessoa)
+}
+
 export async function listarVagas(dispositivoId: string, filtro: 'ativa' | 'encerradas' | 'todas', vagaId?: string): Promise<Vaga[]> {
   const linhas = await useDb()
     .select({ vaga: vagas, nomeDaRua: ruas.nome, trajeto: ruas.trajeto })
     .from(vagas)
     .innerJoin(ruas, eq(ruas.id, vagas.ruaId))
-    .where(and(eq(vagas.dispositivoId, dispositivoId), condicaoDoFiltro(filtro), vagaId ? eq(vagas.id, vagaId) : undefined))
+    .where(and(vagaDoDono(dispositivoId), condicaoDoFiltro(filtro), vagaId ? eq(vagas.id, vagaId) : undefined))
     .orderBy(desc(vagas.chegada))
   return Promise.all(linhas.map(montarVaga))
 }
@@ -27,7 +36,7 @@ export async function rotinaNaRegiao(dispositivoId: string): Promise<RotinaNaReg
   const linhas = await useDb()
     .select({ chegada: vagas.chegada, saida: vagas.saida })
     .from(vagas)
-    .where(and(eq(vagas.dispositivoId, dispositivoId), gte(vagas.chegada, desde), isNotNull(vagas.saida)))
+    .where(and(vagaDoDono(dispositivoId), gte(vagas.chegada, desde), isNotNull(vagas.saida)))
   const dias = new Set(linhas.map(linha => linha.chegada.toISOString().slice(0, 10)))
   return {
     chegada: horarioMedio(linhas.map(linha => linha.chegada)),

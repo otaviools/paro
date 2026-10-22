@@ -7,5 +7,5 @@ export default defineNitroPlugin(async () => {
   const url = useRuntimeConfig().databaseUrl
   if (url !== BANCO_EM_MEMORIA) return
   await migrar(useDb(), url)
-  await semear(useDb())
+  await semear(useDb(), { demonstracao: true })
 })

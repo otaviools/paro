@@ -1,8 +1,7 @@
 import { and, eq } from 'drizzle-orm'
 import { resultadosDaPesquisa, ruas } from '../db/schema'
+import { PERGUNTA_ONDE_CONSEGUEM_VAGA } from '../db/estimativas'
 import type { CitacaoNaPesquisa } from '../../shared/types/previsao'
-
-export const PERGUNTA_ONDE_CONSEGUEM_VAGA = 4
 
 export async function buscarRua(ruaId: string) {
   const [rua] = await useDb().select().from(ruas).where(eq(ruas.id, ruaId))

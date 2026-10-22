@@ -8,3 +8,8 @@ export interface Area {
   referencia: Point
   ruasMedidas: number
 }
+
+export interface BairroDaPosicao {
+  bairro: string
+  cidade: string
+}

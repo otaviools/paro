@@ -45,6 +45,10 @@ export function chancePontual(taxas: number[]): number | null {
   return arredondarPara5(percentil(ordenarChances(taxas), 0.5))
 }
 
+export function faixaDoIntervalo(min: number, max: number): FaixaDeChance {
+  return { min: arredondarPara5(min), max: arredondarPara5(max) }
+}
+
 export function formatarChance(faixa: FaixaDeChance | null): string {
   if (faixa === null) return '—'
   if (faixa.max <= 5) return 'até 5%'

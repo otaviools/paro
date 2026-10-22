@@ -17,7 +17,22 @@ export function pontoMedio(trajeto: LineString): [number, number] {
 }
 
 export function distanciaAteTrajeto(ponto: Position, trajeto: LineString): number {
-  return Math.min(...trajeto.coordinates.map(vertice => distanciaEmMetros(ponto, vertice)))
+  const vertices = trajeto.coordinates
+  if (vertices.length < 2) return Math.min(...vertices.map(vertice => distanciaEmMetros(ponto, vertice)))
+  return Math.min(...vertices.slice(1).map((fim, indice) => distanciaAteSegmento(ponto, vertices[indice]!, fim)))
+}
+
+export function distanciaAteSegmento(ponto: Position, inicio: Position, fim: Position): number {
+  const [lng = 0, lat = 0] = ponto
+  const escalaX = Math.cos(radianos(lat))
+  const ax = ((inicio[0] ?? 0) - lng) * escalaX
+  const ay = (inicio[1] ?? 0) - lat
+  const bx = ((fim[0] ?? 0) - lng) * escalaX
+  const by = (fim[1] ?? 0) - lat
+  const comprimento = (bx - ax) ** 2 + (by - ay) ** 2
+  const t = comprimento === 0 ? 0 : Math.min(1, Math.max(0, -(ax * (bx - ax) + ay * (by - ay)) / comprimento))
+  const maisProximo: Position = [lng + (ax + t * (bx - ax)) / escalaX, lat + ay + t * (by - ay)]
+  return distanciaEmMetros(ponto, maisProximo)
 }
 
 export function verticeMaisProximo(ponto: Position, trajeto: LineString): [number, number] {

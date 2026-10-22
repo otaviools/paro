@@ -15,6 +15,8 @@ export default defineEventHandler(async (event): Promise<DetalheRua> => {
   return {
     previsao,
     trajeto: rua.trajeto,
+    destino: (rua.destino?.coordinates as [number, number] | undefined) ?? null,
+    capacidade: rua.capacidade,
     faixa: momento.faixaInicio,
     citacao: await citacaoNaPesquisa(rua.nome),
     alternativa: melhorAlternativa(previsoes, previsao),

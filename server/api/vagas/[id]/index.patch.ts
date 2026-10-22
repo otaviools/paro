@@ -16,6 +16,6 @@ export default defineEventHandler(async (event) => {
   await useDb().update(vagas).set({
     ...(dados.saidaPrevista !== undefined && { saidaPrevista: dados.saidaPrevista ? new Date(dados.saidaPrevista) : null }),
     ...(dados.avisarAoSair !== undefined && { avisarAoSair: dados.avisarAoSair }),
-  }).where(and(eq(vagas.id, id), eq(vagas.dispositivoId, dispositivoId)))
+  }).where(and(eq(vagas.id, id), vagaDoDono(dispositivoId)))
   return buscarVaga(dispositivoId, id)
 })

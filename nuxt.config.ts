@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 
 export default defineNuxtConfig({
 
-  modules: ['@nuxt/ui', '@nuxt/eslint', '@nuxt/test-utils/module', 'nuxt-auth-utils', ...(process.env.VITEST ? [] : ['@vite-pwa/nuxt'])],
+  modules: ['@nuxt/ui', '@nuxt/eslint', '@nuxt/test-utils/module', 'nuxt-auth-utils', 'nuxt-email-renderer', ...(process.env.VITEST ? [] : ['@vite-pwa/nuxt'])],
   components: [{ path: '~/components', pathPrefix: false }],
   devtools: { enabled: true },
   app: {
@@ -19,11 +19,21 @@ export default defineNuxtConfig({
   colorMode: { preference: 'system', fallback: 'light' },
   runtimeConfig: {
     databaseUrl: '',
+    adminPassword: '',
+    emailPepper: '',
+    smtpHost: '',
+    smtpPort: '465',
+    smtpUser: '',
+    smtpPassword: '',
+    emailRemetente: '',
+    session: { maxAge: 60 * 60 * 24 * 365, cookie: { sameSite: 'lax', secure: process.env.NODE_ENV === 'production' } },
     public: {
       favicon: process.env.NODE_ENV === 'production' ? '/favicon-producao.svg' : '/favicon-localhost.svg',
     },
   }, compatibilityDate: '2026-10-01',
   nitro: {
+    // Logo empacotada no servidor para ir anexada aos e-mails (cid), sem depender de URL pública.
+    serverAssets: [{ baseName: 'marca-logo', dir: fileURLToPath(new URL('./marca/logo', import.meta.url)) }],
     publicAssets: [
       { dir: fileURLToPath(new URL('./marca/favicon', import.meta.url)), baseURL: '/', maxAge: 60 * 60 * 24 },
       { dir: fileURLToPath(new URL('./marca/logo', import.meta.url)), baseURL: '/marca/logo', maxAge: 60 * 60 * 24 },
@@ -32,7 +42,7 @@ export default defineNuxtConfig({
       { dir: fileURLToPath(new URL('./node_modules/maplibre-gl/dist', import.meta.url)), baseURL: '/maplibre', maxAge: 60 * 60 * 24 * 7 },
     ],
     experimental: { tasks: true },
-    scheduledTasks: { '0 4 * * *': ['historico:limpar'] },
+    scheduledTasks: { '0 4 * * *': ['historico:limpar'], '15 * * * *': ['relatos:anonimizar'] },
   },
   vite: {
     optimizeDeps: { exclude: ['maplibre-gl'] },
@@ -45,6 +55,7 @@ export default defineNuxtConfig({
   icon: {
     serverBundle: { collections: ['lucide'] },
   },
+  nuxtEmailRenderer: { codeHighlighting: false },
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
@@ -61,7 +72,7 @@ export default defineNuxtConfig({
         { src: '/icone-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
       ],
     },
-    workbox: { navigateFallback: '/', globPatterns: ['**/*.{js,css,html,svg,png,woff2}'] },
+    workbox: { navigateFallback: '/', globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], importScripts: ['/sw-notificacao.js'] },
     devOptions: { enabled: false },
   },
 })
