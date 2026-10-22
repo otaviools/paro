@@ -17,7 +17,6 @@ const opcao = computed(() => opcaoDeRosca(cores.value, animar.value, {
   rotulos: props.opcoes.map(opcao => opcao.opcao),
   valores: props.opcoes.map(opcao => opcao.percentual),
   tons: tons.value,
-  indiceDestaque: indiceDestaque.value,
 }))
 
 const descricao = computed(() => props.opcoes.map(opcao => `${opcao.opcao}: ${opcao.percentual}%`).join(', '))

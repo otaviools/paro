@@ -67,7 +67,7 @@ function selecionar(ruaId: string) {
       @selecionar="selecionar"
     />
     <MapMarker :posicao="centro">
-      <span class="block rounded-badge bg-(--paro-superficie-ativa) px-3 py-2 text-nota font-bold text-highlighted ring-1 ring-default">
+      <span class="block rounded-badge bg-(--app-marcador-referencia) px-3 py-2 text-nota font-bold text-(--app-marcador-referencia-texto)">
         {{ mapa.nomeDaReferencia }}
       </span>
     </MapMarker>

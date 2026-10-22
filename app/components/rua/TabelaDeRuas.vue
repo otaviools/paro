@@ -54,8 +54,8 @@ defineEmits<{ selecionar: [ruaId: string] }>()
         <tr
           v-for="linha in linhas"
           :key="linha.ruaId"
-          class="cursor-pointer transition hover:bg-muted/60"
-          :class="linha.ruaId === selecionada ? 'bg-accented/60' : ''"
+          class="cursor-pointer transition"
+          :class="linha.ruaId === selecionada ? 'bg-(--paro-azul-texto) **:text-(--paro-creme)!' : 'hover:bg-muted/60'"
           @click="$emit('selecionar', linha.ruaId)"
         >
           <th
@@ -88,7 +88,7 @@ defineEmits<{ selecionar: [ruaId: string] }>()
           </td>
           <td class="py-4 text-card font-extrabold text-highlighted">
             <NuxtLink
-              v-if="!linha.temMedicao"
+              v-if="!linha.temMedicao && !linha.confianca"
               :to="{ path: '/sugerir', query: { rua: linha.nome } }"
               class="text-interface font-bold text-primary"
               @click.stop
@@ -97,10 +97,16 @@ defineEmits<{ selecionar: [ruaId: string] }>()
             </NuxtLink>
             <template v-else>
               {{ formatarChance(linha.chance) }}
+              <SeloDeConfianca
+                v-if="linha.confianca"
+                :confianca="linha.confianca"
+                compacto
+                class="mt-0.5 block text-nota! font-normal"
+              />
             </template>
           </td>
           <td class="py-4 text-interface text-muted">
-            {{ linha.temMedicao ? `${linha.distanciaM} m` : 'fora da área' }}
+            {{ linha.temMedicao || linha.confianca ? `${linha.distanciaM} m` : 'fora da área' }}
           </td>
           <td class="py-4 pr-6">
             <span
@@ -109,8 +115,8 @@ defineEmits<{ selecionar: [ruaId: string] }>()
             >
               <span class="h-1.5 w-16 overflow-hidden rounded-full bg-muted">
                 <span
-                  class="block h-full rounded-full bg-primary"
-                  :style="{ width: `${Math.min(100, linha.citacao * 2)}%` }"
+                  class="block h-full rounded-full"
+                  :style="{ width: `${Math.min(100, linha.citacao * 2)}%`, backgroundImage: degradeCss(linha.citacao) }"
                 />
               </span>
               <span class="text-interface font-bold text-highlighted">{{ linha.citacao }}%</span>

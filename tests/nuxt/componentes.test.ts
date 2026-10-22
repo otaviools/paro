@@ -14,6 +14,8 @@ const previsao: PrevisaoRua = {
   chance: { min: 25, max: 35 },
   medidoEm: '2026-10-06T22:00:00.000Z',
   temMedicao: true,
+  confianca: { origem: 'campo', nivel: 'media', amostra: 4, margem: 6 },
+  relatoRecente: null,
 }
 
 describe('PadraoOcupacao', () => {
@@ -60,8 +62,8 @@ describe('GraficoDaNoite', () => {
     const grafico = await mountSuspended(GraficoDaNoite, {
       props: {
         pontos: [
-          { faixa: '18:00', rotulo: '18h', chance: 40, agora: false },
-          { faixa: '19:00', rotulo: '19h', chance: 30, agora: true },
+          { faixa: '18:00', rotulo: '18h', chance: 40, agora: false, origem: 'campo' },
+          { faixa: '19:00', rotulo: '19h', chance: 30, agora: true, origem: 'campo' },
         ],
       },
     })

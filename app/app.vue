@@ -19,6 +19,9 @@ useHead({
       <NuxtLayout>
         <NuxtPage />
       </NuxtLayout>
+      <ClientOnly>
+        <PerguntaDeEstacionamento />
+      </ClientOnly>
     </UTheme>
   </UApp>
 </template>

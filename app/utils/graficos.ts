@@ -28,6 +28,7 @@ interface DadosDeColunas {
   eixo?: string
   quebrarRotulo?: number
   sufixoDaDica?: string
+  corPorValor?: boolean
 }
 
 interface DadosDeBarras {
@@ -52,7 +53,6 @@ interface DadosDeRosca {
   rotulos: string[]
   valores: number[]
   tons: string[]
-  indiceDestaque: number
 }
 
 interface DadosDeBarrasRadiais {
@@ -153,12 +153,17 @@ function serieDeColunas(cores: CoresDoGrafico, dados: DadosDeColunas) {
     barMinHeight: 3,
     data: dados.valores.map((valor, indice) => ({
       value: valor,
-      itemStyle: { color: dados.destaques[indice] ? cores.destaque : cores.barra, borderRadius: [6, 6, 0, 0] },
+      itemStyle: { color: corDaColuna(cores, dados, indice), borderRadius: [6, 6, 0, 0] },
       label: { color: dados.destaques[indice] ? cores.destaque : cores.texto },
     })),
     label: { show: true, position: 'top' as const, formatter: '{c}%', fontSize: 13, fontWeight: 700, distance: 6 },
     emphasis: { itemStyle: { opacity: 0.85 } },
   }
+}
+
+function corDaColuna(cores: CoresDoGrafico, dados: DadosDeColunas, indice: number) {
+  if (dados.corPorValor) return degradeVertical(dados.valores[indice] ?? 0)
+  return dados.destaques[indice] ? cores.destaque : cores.barra
 }
 
 /** Barras horizontais: rótulo acima da barra, percentual à direita. */
@@ -226,7 +231,7 @@ export function opcaoDeEmpilhado(cores: CoresDoGrafico, animar: boolean, dados: 
       inverse: true,
       data: dados.grupos,
       ...SEM_LINHA,
-      axisLabel: { fontSize: 12, color: cores.textoFraco, formatter: (valor: string) => valor.replace(/ \(n=\d+\)$/, '') },
+      axisLabel: { fontSize: 12, color: cores.textoFraco },
     },
     series: dados.opcoes.map((opcao, indice) => segmentoEmpilhado(cores, dados, opcao, indice)),
   }
@@ -263,61 +268,54 @@ function segmentoEmpilhado(cores: CoresDoGrafico, dados: DadosDeEmpilhado, opcao
   }
 }
 
-/** Rosca de composição (partes de um todo que somam 100%), com legenda à direita e destaque no centro. */
+/**
+ * Rosca no padrão do exemplo "pie-doughnut" do ECharts: legenda no topo, fatias separadas e arredondadas,
+ * sem rótulos externos; ao passar o mouse, o % e o nome da fatia aparecem no centro.
+ */
 export function opcaoDeRosca(cores: CoresDoGrafico, animar: boolean, dados: DadosDeRosca): EChartsOption {
   return {
     ...base(cores, animar),
     tooltip: dica(cores, ({ name, value }) => `<b>${name}</b>: ${value}%`),
-    legend: legendaDaRosca(cores, dados),
+    legend: legendaDaRosca(cores),
     series: [{
       type: 'pie',
-      center: ['25%', '50%'],
-      radius: ['34%', '54%'],
-      padAngle: 1.5,
-      startAngle: 90,
+      center: ['50%', '58%'],
+      radius: ['40%', '70%'],
+      avoidLabelOverlap: false,
+      padAngle: 5,
+      itemStyle: { borderRadius: 10 },
+      label: { show: false, position: 'center' },
+      emphasis: { label: rotuloCentralDaRosca(cores) },
       labelLine: { show: false },
-      itemStyle: { borderRadius: 4, borderColor: cores.superficie, borderWidth: 1 },
-      emphasis: { scale: true, scaleSize: 4, label: { show: false } },
       data: dados.valores.map((valor, indice) => ({
         name: dados.rotulos[indice],
         value: valor,
         itemStyle: { color: dados.tons[indice] ?? cores.neutro },
-        label: indice === dados.indiceDestaque ? rotuloCentral(cores, valor) : { show: false },
       })),
     }],
   }
 }
 
-function encurtar(texto: string, limite: number): string {
-  return texto.length > limite ? `${texto.slice(0, limite - 1).trimEnd()}…` : texto
-}
-
-function rotuloCentral(cores: CoresDoGrafico, valor: number) {
+function legendaDaRosca(cores: CoresDoGrafico): EChartsOption['legend'] {
   return {
-    show: true,
-    position: 'center' as const,
-    formatter: `{v|${valor}%}`,
-    rich: { v: { fontSize: 22, fontWeight: 800, color: cores.destaque, fontFamily: FONTE } },
-  }
-}
-
-function legendaDaRosca(cores: CoresDoGrafico, dados: DadosDeRosca): EChartsOption['legend'] {
-  return {
-    orient: 'vertical',
-    right: 0,
-    top: 'middle',
+    top: 0,
+    left: 'center',
     icon: 'roundRect',
     itemWidth: 10,
     itemHeight: 10,
-    itemGap: 10,
-    formatter: (nome: string) => `{n|${encurtar(nome, 11)}}{v|${dados.valores[dados.rotulos.indexOf(nome)] ?? 0}%}`,
-    textStyle: {
-      rich: {
-        n: { width: 72, color: cores.texto, fontSize: 12, fontFamily: FONTE },
-        v: { width: 30, align: 'right', color: cores.texto, fontSize: 12, fontWeight: 700, fontFamily: FONTE },
-      },
-    },
+    textStyle: { color: cores.textoFraco, fontSize: 12, fontFamily: FONTE },
     inactiveColor: cores.grade,
+  }
+}
+
+function rotuloCentralDaRosca(cores: CoresDoGrafico) {
+  return {
+    show: true,
+    formatter: '{v|{c}%}\n{n|{b}}',
+    rich: {
+      v: { fontSize: 26, fontWeight: 800, lineHeight: 32, color: cores.texto, fontFamily: FONTE },
+      n: { fontSize: 12, color: cores.textoFraco, fontFamily: FONTE },
+    },
   }
 }
 
@@ -353,7 +351,7 @@ export function opcaoDeBarrasRadiais(cores: CoresDoGrafico, animar: boolean, dad
 }
 
 /** Anel de proporção: um percentual sobre a trilha. */
-export function opcaoDeAnel(cores: CoresDoGrafico, animar: boolean, percentual: number, espessura = 14): EChartsOption {
+export function opcaoDeAnel(cores: CoresDoGrafico, animar: boolean, percentual: number, espessura = 14, corPorValor = false): EChartsOption {
   const valor = Math.min(100, Math.max(0, percentual))
   return {
     ...base(cores, animar),
@@ -361,11 +359,15 @@ export function opcaoDeAnel(cores: CoresDoGrafico, animar: boolean, percentual: 
       type: 'pie',
       radius: [`${100 - espessura * 2}%`, '100%'],
       startAngle: 90,
+      // Mesmo acabamento da rosca do exemplo "pie-doughnut": fatias separadas e cantos arredondados.
+      padAngle: valor > 0 && valor < 100 ? 5 : 0,
+      itemStyle: { borderRadius: 10 },
+      avoidLabelOverlap: false,
       silent: true,
       label: { show: false },
       labelLine: { show: false },
       data: [
-        { value: valor, itemStyle: { color: cores.destaque, borderRadius: valor < 100 ? 8 : 0 } },
+        { value: valor, itemStyle: { color: corPorValor ? degradeVertical(valor) : cores.destaque } },
         { value: 100 - valor, itemStyle: { color: cores.trilha } },
       ],
     }],

@@ -1,56 +1,53 @@
 <script setup lang="ts">
-useSeoMeta({ title: "Parô | Minha vaga" });
+useSeoMeta({ title: 'Parô | Minha vaga' })
 
-const rota = useRoute();
-const { painel, vagaAtual, editar, sair, lerPonto } = useVaga();
-await painel;
-const { data: historico } = await useHistorico();
-const { data: pesquisa } = await usePesquisa();
-const { areaAtual } = useAreaAtual();
+const rota = useRoute()
+const { painel, vagaAtual, editar, sair, lerPonto } = useVaga()
+await painel
+const { data: historico } = await useHistorico()
+const { data: pesquisa } = await usePesquisa()
+const { areaAtual } = useAreaAtual()
 
-const drawerAberto = ref(false);
-const salvandoSaida = ref(false);
-const saindo = ref(false);
-const confirmarSaida = ref(rota.query.sair === "1" && Boolean(vagaAtual.value));
-const ponto = ref<[number, number] | null>(null);
-const telaGrande = useTelaGrande();
+const drawerAberto = ref(false)
+const salvandoSaida = ref(false)
+const saindo = ref(false)
+const confirmarSaida = ref(rota.query.sair === '1' && Boolean(vagaAtual.value))
+const ponto = ref<[number, number] | null>(null)
+const telaGrande = useTelaGrande()
 
 onMounted(() => {
-  if (vagaAtual.value) ponto.value = lerPonto(vagaAtual.value.id);
-});
+  if (vagaAtual.value) ponto.value = lerPonto(vagaAtual.value.id)
+})
 
-const rotina = computed(() => painel.data.value.rotina);
-const referencia = computed(() => areaAtual.value?.nomeDaReferencia ?? "ESAMC");
-const picoDaPesquisa = computed(() => pesquisa.value?.indicadores[0]);
+const rotina = computed(() => painel.data.value.rotina)
+const referencia = computed(() => areaAtual.value?.nomeDaReferencia ?? 'ESAMC')
+const picoDaPesquisa = computed(() => pesquisa.value?.indicadores[0])
 
 async function salvarSaida(saidaPrevista: string | null) {
-  if (!vagaAtual.value) return;
-  salvandoSaida.value = true;
-  const salvo = await editar(vagaAtual.value.id, { saidaPrevista });
-  salvandoSaida.value = false;
-  if (salvo) drawerAberto.value = false;
+  if (!vagaAtual.value) return
+  salvandoSaida.value = true
+  const salvo = await editar(vagaAtual.value.id, { saidaPrevista })
+  salvandoSaida.value = false
+  if (salvo) drawerAberto.value = false
 }
 
 async function avisar(ligado: boolean) {
   if (vagaAtual.value)
-    await editar(vagaAtual.value.id, { avisarAoSair: ligado });
+    await editar(vagaAtual.value.id, { avisarAoSair: ligado })
 }
 
 async function registrarSaida() {
-  if (!vagaAtual.value) return;
-  saindo.value = true;
-  const vaga = await sair(vagaAtual.value.id);
-  saindo.value = false;
-  if (vaga) await navigateTo(`/vaga/saida?id=${vaga.id}`);
+  if (!vagaAtual.value) return
+  saindo.value = true
+  const vaga = await sair(vagaAtual.value.id)
+  saindo.value = false
+  if (vaga) await navigateTo(`/vaga/saida?id=${vaga.id}`)
 }
 </script>
 
 <template>
   <div>
-    <CabecalhoPainel
-      titulo="Minha vaga"
-      subtitulo="Onde você parou e sua rotina na região"
-    />
+    <CabecalhoPainel titulo="Minha vaga" />
     <div
       class="flex flex-col gap-6 lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-4 lg:p-6"
     >
@@ -61,7 +58,10 @@ async function registrarSaida() {
         "
         :tema="false"
       >
-        <template v-if="vagaAtual" #extra>
+        <template
+          v-if="vagaAtual"
+          #extra
+        >
           <UBadge
             color="neutral"
             variant="soft"
@@ -84,7 +84,6 @@ async function registrarSaida() {
             <h2 class="text-stat font-bold text-highlighted">
               {{ vagaAtual.nomeDaRua }}
             </h2>
-            <p class="text-legenda text-muted">perto da {{ referencia }}</p>
           </div>
           <UBadge
             color="neutral"
@@ -108,17 +107,25 @@ async function registrarSaida() {
           <h2 class="text-stat font-bold text-highlighted">
             {{ vagaAtual.nomeDaRua }}
           </h2>
-          <p class="text-legenda text-muted">perto da {{ referencia }}</p>
+          <p class="text-legenda text-muted">
+            perto da {{ referencia }}
+          </p>
         </div>
-        <StatsDaVaga :vaga="vagaAtual" @editar-saida="drawerAberto = true" />
+        <StatsDaVaga
+          :vaga="vagaAtual"
+          @editar-saida="drawerAberto = true"
+        />
         <section class="flex flex-col gap-2">
           <EtiquetaDeSecao texto="Linha do tempo de hoje" />
-          <LinhaDoTempoDeVagas :vagas="[vagaAtual]" agora-marcado />
+          <LinhaDoTempoDeVagas
+            :vagas="[vagaAtual]"
+            agora-marcado
+          />
         </section>
         <UCard
           :ui="{
-            root: 'lg:ring-0 lg:bg-transparent',
-            body: 'p-4 sm:p-4 lg:p-0',
+            root: 'lg:rounded-alerta lg:bg-muted lg:ring-0',
+            body: 'p-4 sm:p-4',
           }"
         >
           <InterruptorAvisarSaida
@@ -183,7 +190,10 @@ async function registrarSaida() {
             texto="Sua rotina na região"
             nota="média das últimas 4 semanas"
           />
-          <RotinaNaRegiao :rotina="rotina" :caixas="!telaGrande" />
+          <RotinaNaRegiao
+            :rotina="rotina"
+            :caixas="!telaGrande"
+          />
           <UAlert
             v-if="picoDaPesquisa && rotina.chegada"
             icon="i-lucide-info"
@@ -205,7 +215,10 @@ async function registrarSaida() {
             body: 'flex flex-col gap-3 max-lg:contents lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:p-5',
           }"
         >
-          <EtiquetaDeSecao texto="Histórico" class="lg:hidden" />
+          <EtiquetaDeSecao
+            texto="Histórico"
+            class="lg:hidden"
+          />
           <h2 class="hidden text-card font-bold text-highlighted lg:block">
             Histórico
           </h2>
@@ -230,12 +243,24 @@ async function registrarSaida() {
               body: 'px-4 py-1 sm:px-4 sm:py-1 lg:p-0',
             }"
           >
-            <ul v-if="historico.length" class="divide-y divide-default">
-              <li v-for="vaga in historico.slice(0, 5)" :key="vaga.id">
-                <ItemHistorico :vaga="vaga" :compacto="telaGrande" />
+            <ul
+              v-if="historico.length"
+              class="divide-y divide-default"
+            >
+              <li
+                v-for="vaga in historico.slice(0, 5)"
+                :key="vaga.id"
+              >
+                <ItemHistorico
+                  :vaga="vaga"
+                  :compacto="telaGrande"
+                />
               </li>
             </ul>
-            <p v-else class="py-4 text-legenda text-muted">
+            <p
+              v-else
+              class="py-4 text-legenda text-muted"
+            >
               Suas vagas encerradas aparecem aqui por 90 dias.
             </p>
           </UCard>

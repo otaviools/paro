@@ -50,7 +50,7 @@ const coresPadrao: CoresDoGrafico = {
   textoFraco: '#615F59',
   textoInvertido: '#FFF9E3',
   fundoInvertido: '#32312C',
-  superficie: '#FFFCF2',
+  superficie: '#FFF9E3',
   borda: 'rgb(50 49 44 / 0.15)',
   grade: 'rgb(50 49 44 / 0.10)',
 }

@@ -26,6 +26,13 @@ export default defineAppConfig({
       slots: {
         root: 'rounded-card',
       },
+      variants: {
+        variant: {
+          outline: {
+            root: 'bg-(--app-card) ring ring-default divide-y divide-default dark:ring-0',
+          },
+        },
+      },
     },
     button: {
       slots: {

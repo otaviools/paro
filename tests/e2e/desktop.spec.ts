@@ -11,7 +11,7 @@ test('painel mostra melhor chance, ruas por perto e resumo da pesquisa', async (
   await expect(page.getByRole('heading', { name: 'Painel' })).toBeVisible()
   await expect(page.getByText('Melhor chance agora')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Ruas por perto' })).toBeVisible()
-  await expect(page.getByText('Da pesquisa · n=99')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Ver pesquisa' })).toBeVisible()
 })
 
 test('ruas em tabela com detalhe ao lado', async ({ page }) => {
@@ -28,8 +28,8 @@ test('trocar o horário atualiza a lista', async ({ page }) => {
   await expect(page.getByRole('table')).toContainText('75–85%')
 })
 
-test('pesquisa mostra só percentuais com a base', async ({ page }) => {
+test('pesquisa mostra os percentuais sem o tamanho da amostra', async ({ page }) => {
   await abrir(page, '/pesquisa')
   await expect(page.getByText('respostas válidas').first()).toBeVisible()
-  await expect(page.getByText('n=81')).toBeVisible()
+  await expect(page.getByText(/\bn\s?=\s?\d/)).toHaveCount(0)
 })

@@ -7,20 +7,20 @@ const { menuAberto } = useMenuLateral()
 // de 72 px), expandida ou recolhida: corpo com 12 px + link com 14 px + metade do ícone de 20 px.
 // Assim os ícones não se mexem ao recolher ou expandir; só os textos somem.
 const uiDoMenuLateral = {
-  link: 'h-11 px-3.5 rounded-botao text-corpo font-medium text-muted data-active:text-highlighted data-active:font-bold before:rounded-botao data-active:before:bg-accented',
-  linkLeadingIcon: 'size-5 text-muted group-data-active:text-highlighted',
+  link: 'h-11 px-3.5 rounded-botao text-corpo font-medium text-muted data-active:text-(--app-menu-ativo-texto) data-active:font-bold before:rounded-botao data-active:before:bg-(image:--app-menu-ativo-fundo) data-active:before:bg-(--app-menu-ativo)',
+  linkLeadingIcon: 'size-5 text-muted group-data-active:text-(--app-menu-ativo-texto)',
 }
 </script>
 
 <template>
-  <div class="flex min-h-dvh bg-default">
+  <div class="flex min-h-dvh bg-(--app-fundo-pagina)">
     <USidebar
       v-model:open="menuAberto"
       collapsible="icon"
       rail
       :ui="{
         root: '[--sidebar-width:248px] [--sidebar-width-icon:4.5rem]',
-        container: 'bg-elevated',
+        container: 'bg-(--app-fundo-menu)',
         inner: 'divide-y-0',
         header: 'min-h-0 px-3 pt-6 pb-0',
         body: 'gap-8 overflow-x-hidden px-3 py-8',
@@ -40,7 +40,7 @@ const uiDoMenuLateral = {
       <template #default="{ state }">
         <!-- Altura fixa (44 px) nos dois estados para o menu abaixo não mudar de lugar. -->
         <div
-          class="flex h-11 shrink-0 items-center"
+          class="flex h-11 min-w-0 shrink-0 items-center"
           :class="state === 'collapsed' ? 'pl-0.5' : 'px-3.5'"
         >
           <SeletorDeLocal :compacto="state === 'collapsed'" />
@@ -62,7 +62,7 @@ const uiDoMenuLateral = {
           :collapsed="state === 'collapsed'"
           :tooltip="{ arrow: true }"
           :ui="uiDoMenuLateral"
-          aria-label="Ajustes"
+          aria-label="Admin e ajustes"
         />
         <!--
           Altura fixa (duas linhas do aviso) nos dois estados, para "Ajustes" não mudar de lugar.
@@ -90,6 +90,7 @@ const uiDoMenuLateral = {
           </UTooltip>
           <AvisoPrivacidade
             v-else
+            texto="Localização segura"
             class="w-56 px-4 text-nota! font-normal! text-muted!"
           />
         </div>

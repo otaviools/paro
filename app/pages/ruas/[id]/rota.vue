@@ -11,7 +11,10 @@ const { posicao, localizar } = useLocalizacao()
 useSeoMeta({ title: () => `Como chegar · ${detalhe.value?.previsao.nome ?? 'Rua'} · Parô` })
 
 const origem = computed<[number, number]>(() => posicao.value ?? ((mapa.value?.referencia.coordinates ?? [0, 0]) as [number, number]))
-const destino = computed<[number, number]>(() => (detalhe.value ? verticeMaisProximo(origem.value, detalhe.value.trajeto) : origem.value))
+const destino = computed<[number, number]>(() => {
+  if (!detalhe.value) return origem.value
+  return detalhe.value.destino ?? verticeMaisProximo(origem.value, detalhe.value.trajeto)
+})
 const distancia = computed(() => distanciaEmMetros(origem.value, destino.value))
 const caminho = computed<[number, number][]>(() => [origem.value, [destino.value[0], origem.value[1]], destino.value])
 
@@ -45,7 +48,7 @@ const mapaDaRua = computed(() => {
         />
       </div>
     </div>
-    <div class="relative -mt-6 flex flex-1 flex-col gap-5 rounded-t-[24px] bg-default px-6 pt-3 pb-8 lg:mt-0 lg:rounded-none lg:px-0">
+    <div class="relative -mt-6 flex flex-1 flex-col gap-5 rounded-t-[24px] bg-default px-6 pt-3 pb-8 lg:mt-0 lg:flex-none lg:rounded-card lg:p-6 lg:ring-1 lg:ring-default">
       <span
         class="mx-auto block h-1 w-10 rounded-full bg-accented lg:hidden"
         aria-hidden="true"
