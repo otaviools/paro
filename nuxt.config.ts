@@ -72,7 +72,7 @@ export default defineNuxtConfig({
         { src: '/icone-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
       ],
     },
-    workbox: { navigateFallback: '/', globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], importScripts: ['/sw-notificacao.js'] },
+    workbox: { navigateFallback: null, globPatterns: ['**/*.{js,css,html,svg,png,woff2}'], importScripts: ['/sw-notificacao.js'] },
     devOptions: { enabled: false },
   },
 })
