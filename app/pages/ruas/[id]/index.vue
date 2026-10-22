@@ -3,45 +3,54 @@ const rota = useRoute()
 const ruaId = computed(() => String(rota.params.id))
 
 const tela = useTelaDeRuas(ruaId)
-const { ordem, previsoes, tabela, medidoEm } = tela
+const { ordem, previsoes, tabela, aPartirDeVoce } = tela
 const [, , { data: detalhe, error }, { data: noite }] = await tela.carregar()
 const { data: mapa } = await useMapaDaArea(tela.horario)
-const { areaAtual } = useAreaAtual()
 const { rotuloDoMomento } = useHorario()
 const telaGrande = useTelaGrande()
 
-if (error.value) throw createError({ statusCode: 404, statusMessage: 'Rua não encontrada', fatal: true })
+if (error.value)
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Rua não encontrada',
+    fatal: true,
+  })
 
 useSeoMeta({ title: () => `${detalhe.value?.previsao.nome ?? 'Rua'} · Parô` })
 
 const temPrevisao = computed(() => Boolean(detalhe.value?.previsao.chance))
-const maisPerto = computed(() => previsoes.data.value.find(previsao => previsao.chance !== null))
-const referencia = computed(() => (mapa.value?.referencia.coordinates ?? [0, 0]) as [number, number])
-const subtitulo = computed(() => `Todas as ruas medidas no entorno da ${areaAtual.value?.nomeDaReferencia ?? 'ESAMC'}${medidoEm.value ? ` · medido às ${formatarHora(medidoEm.value)}` : ''}`)
+const maisPerto = computed(() =>
+  previsoes.data.value.find(previsao => previsao.chance !== null),
+)
+const referencia = computed(
+  () => (mapa.value?.referencia.coordinates ?? [0, 0]) as [number, number],
+)
 
 const mapaDaRua = computed(() => {
   if (!mapa.value || !detalhe.value) return null
   return {
     ...mapa.value,
-    ruas: { ...mapa.value.ruas, features: mapa.value.ruas.features.filter(feature => feature.properties.ruaId === ruaId.value) },
+    ruas: {
+      ...mapa.value.ruas,
+      features: mapa.value.ruas.features.filter(
+        feature => feature.properties.ruaId === ruaId.value,
+      ),
+    },
   }
 })
 
 const caminho = computed<[number, number][]>(() => {
   if (!detalhe.value) return []
-  const destino = verticeMaisProximo(referencia.value, detalhe.value.trajeto)
+  const destino
+    = detalhe.value.destino
+      ?? verticeMaisProximo(referencia.value, detalhe.value.trajeto)
   return [referencia.value, [destino[0], referencia.value[1]], destino]
 })
 </script>
 
 <template>
   <div>
-    <CabecalhoPainel
-      titulo="Ruas"
-      :subtitulo="subtitulo"
-      horario
-      busca
-    />
+    <CabecalhoPainel titulo="Ruas" />
     <div
       v-if="detalhe"
       class="-mx-6 -mt-12 flex flex-col lg:hidden"
@@ -65,7 +74,9 @@ const caminho = computed<[number, number][]>(() => {
             />
           </div>
         </div>
-        <div class="relative -mt-6 rounded-t-[24px] bg-default px-6 pt-3 pb-6 shadow-[0_-8px_24px_rgb(0_0_0/0.06)]">
+        <div
+          class="relative -mt-6 rounded-t-[24px] bg-default px-6 pt-3 pb-6 shadow-[0_-8px_24px_rgb(0_0_0/0.06)]"
+        >
           <span
             class="mx-auto mb-4 block h-1 w-10 rounded-full bg-accented"
             aria-hidden="true"
@@ -97,6 +108,7 @@ const caminho = computed<[number, number][]>(() => {
       :noite="noite"
       :contraste="tabela.contraste.value"
       :base="tabela.base.value"
+      :a-partir-de-voce="aPartirDeVoce"
       @selecionar="navigateTo(`/ruas/${$event}`, { replace: true })"
     />
   </div>

@@ -1,4 +1,4 @@
-import type { Area } from '#shared/types/area'
+import type { Area, BairroDaPosicao } from '#shared/types/area'
 
 export function useAreaAtual() {
   const areas = useState<Area[]>('areas', () => [])
@@ -13,11 +13,18 @@ export function useAreaAtual() {
 
   const areaId = computed(() => areaAtual.value?.id)
 
-  const nomeDoLocal = computed(() => (areaAtual.value ? `${areaAtual.value.nome}, ${areaAtual.value.cidade}` : 'Escolher local'))
+  const bairro = useState<BairroDaPosicao | null>('bairro-atual', () => null)
+
+  const partesDoLocal = computed(() => {
+    if (bairro.value) return { lugar: bairro.value.bairro, cidade: bairro.value.cidade }
+    return areaAtual.value ? { lugar: areaAtual.value.nome, cidade: areaAtual.value.cidade } : { lugar: 'Escolher local', cidade: '' }
+  })
+
+  const nomeDoLocal = computed(() => [partesDoLocal.value.lugar, partesDoLocal.value.cidade].filter(Boolean).join(', '))
 
   function escolherArea(id: string) {
     escolhida.value = id
   }
 
-  return { areas, areaAtual, areaId, nomeDoLocal, escolherArea }
+  return { areas, areaAtual, areaId, nomeDoLocal, partesDoLocal, escolherArea }
 }
