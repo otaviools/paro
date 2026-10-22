@@ -43,8 +43,8 @@ function montarIndicadores(linhas: Linha[]): Indicador[] {
   const sim = valor(6, 'Sim')
   const talvez = valor(6, 'Talvez')
   return [
-    { valor: `${pico?.percentual ?? 0}%`, rotulo: 'chegam entre 18h30 e 19h59', detalhe: `pico de chegada (n=${pico?.base ?? 0})` },
-    { valor: `${pouco?.percentual ?? 0}%`, rotulo: 'acham a vaga pouco previsível', detalhe: `${previsivel?.percentual ?? 0}% acham previsível (n=${pouco?.base ?? 0})` },
-    { valor: `${(sim?.percentual ?? 0) + (talvez?.percentual ?? 0)}%`, rotulo: 'usariam o Parô', detalhe: `${sim?.percentual ?? 0}% sim e ${talvez?.percentual ?? 0}% talvez (n=${sim?.base ?? 0})` },
+    { valor: `${pico?.percentual ?? 0}%`, rotulo: 'chegam entre 18h30 e 19h59', detalhe: 'pico de chegada' },
+    { valor: `${pouco?.percentual ?? 0}%`, rotulo: 'acham a vaga pouco previsível', detalhe: `${previsivel?.percentual ?? 0}% acham previsível` },
+    { valor: `${(sim?.percentual ?? 0) + (talvez?.percentual ?? 0)}%`, rotulo: 'usariam o Parô', detalhe: `${sim?.percentual ?? 0}% sim e ${talvez?.percentual ?? 0}% talvez` },
   ]
 }

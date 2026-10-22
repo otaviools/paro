@@ -53,3 +53,7 @@ export function minutosLocais(data: Date): number {
   const [hora = 0, minuto = 0] = horaLocal(data).split(':').map(Number)
   return hora * 60 + minuto
 }
+
+export function dataLocal(agora = new Date()): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: FUSO }).format(agora)
+}

@@ -11,6 +11,6 @@ export default defineEventHandler(async (event) => {
   await useDb()
     .update(vagas)
     .set({ saida: new Date() })
-    .where(and(eq(vagas.id, id), eq(vagas.dispositivoId, dispositivoId), isNull(vagas.saida)))
+    .where(and(eq(vagas.id, id), vagaDoDono(dispositivoId), isNull(vagas.saida)))
   return buscarVaga(dispositivoId, id)
 })

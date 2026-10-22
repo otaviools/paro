@@ -8,6 +8,27 @@
       "when": 1791924552592,
       "tag": "0000_flawless_karnak",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792010761640,
+      "tag": "0001_clever_tigra",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792183419554,
+      "tag": "0002_swift_sue_storm",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792192397738,
+      "tag": "0003_odd_santa_claus",
+      "breakpoints": true
     }
   ]
 }

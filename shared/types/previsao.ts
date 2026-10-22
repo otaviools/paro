@@ -1,5 +1,13 @@
 import type { FeatureCollection, LineString, Point } from 'geojson'
 import type { EstadoOcupacao, FaixaDeChance } from '../utils/ocupacao'
+import type { Confianca, OrigemDaChance } from '../utils/confianca'
+import type { EstadoRelatado } from '../utils/relato'
+
+export interface RelatoRecente {
+  estado: EstadoRelatado
+  minutos: number
+  relatos: number
+}
 
 export interface PrevisaoRua {
   ruaId: string
@@ -9,6 +17,8 @@ export interface PrevisaoRua {
   chance: FaixaDeChance | null
   medidoEm: string | null
   temMedicao: boolean
+  confianca: Confianca | null
+  relatoRecente: RelatoRecente | null
 }
 
 export interface PontoDaNoite {
@@ -16,6 +26,7 @@ export interface PontoDaNoite {
   rotulo: string
   chance: number
   agora: boolean
+  origem: OrigemDaChance | null
 }
 
 export interface CitacaoNaPesquisa {
@@ -26,6 +37,8 @@ export interface CitacaoNaPesquisa {
 export interface DetalheRua {
   previsao: PrevisaoRua
   trajeto: LineString
+  destino: [number, number] | null
+  capacidade: number | null
   faixa: string
   citacao: CitacaoNaPesquisa | null
   alternativa: PrevisaoRua | null
@@ -49,6 +62,8 @@ export interface PropriedadesDaRua {
   estado: EstadoOcupacao
   chance: string
   medidoEm: string | null
+  confianca: Confianca | null
+  relatoRecente: RelatoRecente | null
 }
 
 export interface MapaDaArea {
