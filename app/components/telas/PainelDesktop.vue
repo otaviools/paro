@@ -3,46 +3,53 @@ import type {
   MapaDaArea,
   PontoDaNoite,
   PrevisaoRua,
-} from "#shared/types/previsao";
-import type { ResumoDaPesquisa } from "#shared/types/pesquisa";
-import type { Vaga } from "#shared/types/vaga";
+} from '#shared/types/previsao'
+import type { ResumoDaPesquisa } from '#shared/types/pesquisa'
+import type { Vaga } from '#shared/types/vaga'
 
 const props = defineProps<{
-  mapa: MapaDaArea | null;
-  previsoes: PrevisaoRua[];
-  melhor: PrevisaoRua | undefined;
-  selecionada: PrevisaoRua | undefined;
-  noite: PontoDaNoite[];
-  vaga: Vaga | null;
-  pesquisa: ResumoDaPesquisa | null;
-  posicao: [number, number] | null;
-  referencia: string;
-  telaGrande: boolean;
-}>();
+  mapa: MapaDaArea | null
+  previsoes: PrevisaoRua[]
+  melhor: PrevisaoRua | undefined
+  selecionada: PrevisaoRua | undefined
+  noite: PontoDaNoite[]
+  vaga: Vaga | null
+  pesquisa: ResumoDaPesquisa | null
+  posicao: [number, number] | null
+  referencia: string
+  telaGrande: boolean
+}>()
 
 defineEmits<{
-  selecionar: [ruaId: string | undefined];
-  sair: [];
-  localizar: [];
-}>();
+  selecionar: [ruaId: string | undefined]
+  sair: []
+  localizar: []
+}>()
 
 const ruasPorPerto = computed(() =>
-  props.previsoes.filter((previsao) => previsao.temMedicao).slice(0, 5),
-);
-const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
+  props.previsoes.filter(previsao => previsao.temMedicao).slice(0, 5),
+)
+const indicadores = computed(() => props.pesquisa?.indicadores ?? [])
 </script>
 
 <template>
   <!--
-    Grade de 2 colunas × 3 linhas que ocupa a altura que sobra da tela:
-    o mapa (linhas 1–2) termina junto com "Ruas por perto" e o gráfico da noite
-    fica na mesma linha dos cards menores.
+    Guia de layout: 12 colunas com 16 px entre elas e 3 linhas que ocupam a altura que sobra da tela.
+    Toda borda de card cai numa linha do guia:
+      colunas 1–6  → mapa (linhas 1–2) e "Chance ao longo da noite" (linha 3)
+      colunas 7–12 → "Melhor chance" (linha 1) e "Ruas por perto" (linha 2)
+      linha 3      → "Minha vaga" (colunas 7–9) e "Da pesquisa" (colunas 10–12)
+    O mapa termina junto com "Ruas por perto", e a linha 3 tem a mesma altura nos três cards.
+    Sem medição não há "Melhor chance" nem gráfico da noite: "Ruas por perto" sobe para a linha 1
+    e o mapa desce até a linha 3, para nenhuma linha vazia deixar bordas desencontradas.
+    Todos os cards usam 20 px de respiro interno, para os textos começarem no mesmo recuo.
   -->
   <div
-    class="hidden min-h-0 flex-1 grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] gap-4 p-6 lg:grid"
+    class="hidden min-h-0 flex-1 grid-cols-12 grid-rows-[auto_minmax(0,1fr)_auto] gap-4 p-6 lg:grid"
   >
     <div
-      class="row-span-2 min-h-60 overflow-hidden rounded-card ring-1 ring-default"
+      class="col-span-6 col-start-1 row-start-1 min-h-60 overflow-hidden rounded-card ring-1 ring-default dark:ring-0"
+      :class="selecionada ? 'row-span-2' : 'row-span-3'"
     >
       <MapaDeRuas
         v-if="telaGrande && mapa"
@@ -56,7 +63,7 @@ const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
     </div>
     <UCard
       v-if="selecionada"
-      class="col-start-1 row-start-3"
+      class="col-span-6 col-start-1 row-start-3"
       :ui="{ body: 'flex h-full flex-col gap-3 p-5 sm:p-5' }"
     >
       <div class="flex items-start justify-between gap-4">
@@ -68,57 +75,84 @@ const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
             {{ selecionada.nome }} selecionada no mapa
           </p>
         </div>
-        <BadgeOcupacao :estado="selecionada.estado" />
+        <BadgeOcupacao
+          :estado="selecionada.estado"
+          class="dark:bg-default"
+        />
       </div>
-      <GraficoDaNoite :pontos="noite" :altura="176" />
+      <GraficoDaNoite
+        :pontos="noite"
+        :altura="176"
+      />
     </UCard>
 
-    <CardMelhorChance
+    <CardMelhorChanceGrande
       v-if="melhor"
       :previsao="melhor"
+      :referencia="referencia"
       etiqueta="Melhor chance agora"
-      grande
-      class="col-start-2 row-start-1"
+      class="col-span-6 col-center-7 row-start-1"
     >
       <template #acao>
         <UButton
           :to="`/ruas/${melhor.ruaId}/rota`"
-          size="lg"
+          size="xl"
           icon="i-lucide-navigation"
-          class="h-11 shrink-0 bg-(--paro-azul) text-(--paro-asfalto) hover:bg-(--paro-azul)/90"
+          trailing-icon="i-lucide-chevron-right"
+          class="h-12 w-50 shrink-0 gap-2.5 bg-(--paro-azul) text-corpo text-(--paro-asfalto) hover:bg-(--paro-azul)/90"
         >
           Como chegar
         </UButton>
       </template>
-    </CardMelhorChance>
+    </CardMelhorChanceGrande>
 
     <UCard
-      class="col-start-2 row-start-2 min-h-0"
+      class="col-span-6 col-start-7 min-h-0"
+      :class="melhor ? 'row-start-2' : 'row-span-2 row-start-1'"
       :ui="{ body: 'flex h-full min-h-0 flex-col gap-2 p-5 sm:p-5' }"
     >
       <div class="flex items-start justify-between">
-        <h2 class="text-card font-bold text-highlighted">Ruas por perto</h2>
+        <h2 class="text-card font-bold text-highlighted">
+          Ruas por perto
+        </h2>
         <ULink
           to="/ruas"
           class="flex items-center gap-1 text-legenda font-bold text-primary"
         >
-          Ver todas <UIcon name="i-lucide-arrow-right" class="size-4" />
+          Ver todas <UIcon
+            name="i-lucide-arrow-right"
+            class="size-4"
+          />
         </ULink>
       </div>
       <LegendaOcupacao />
       <ul
         class="-mr-2 min-h-0 flex-1 divide-y divide-default overflow-y-auto pr-2"
       >
-        <li v-for="previsao in ruasPorPerto" :key="previsao.ruaId">
-          <CardRua :previsao="previsao" :to="`/ruas/${previsao.ruaId}`" seta />
+        <li
+          v-for="previsao in ruasPorPerto"
+          :key="previsao.ruaId"
+        >
+          <CardRua
+            :previsao="previsao"
+            :to="`/ruas/${previsao.ruaId}`"
+            seta
+          />
         </li>
       </ul>
     </UCard>
 
-    <div class="col-start-2 row-start-3 grid grid-cols-2 gap-4">
-      <UCard :ui="{ body: 'flex h-full flex-col gap-3 p-5 sm:p-5' }">
+    <div
+      class="col-span-6 col-start-7 row-start-3 grid grid-cols-subgrid gap-4"
+    >
+      <UCard
+        class="col-span-3"
+        :ui="{ body: 'flex h-full flex-col gap-3 p-5 sm:p-5' }"
+      >
         <div class="flex items-center justify-between">
-          <h2 class="etiqueta text-muted">Minha vaga</h2>
+          <h2 class="etiqueta text-muted">
+            Minha vaga
+          </h2>
           <UBadge
             v-if="vaga"
             color="neutral"
@@ -133,14 +167,18 @@ const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
             <p class="text-card font-bold text-highlighted">
               {{ vaga.nomeDaRua }}
             </p>
-            <p class="text-legenda text-muted">perto da {{ referencia }}</p>
+            <p class="text-legenda text-muted">
+              perto da {{ referencia }}
+            </p>
           </div>
           <dl class="grid grid-cols-2 gap-2">
             <div>
               <dd class="text-stat font-extrabold">
                 {{ formatarHora(vaga.chegada) }}
               </dd>
-              <dt class="text-nota text-muted">desde</dt>
+              <dt class="text-nota text-muted">
+                desde
+              </dt>
             </div>
             <div>
               <dd class="text-stat font-extrabold">
@@ -150,7 +188,9 @@ const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
                     : "—"
                 }}
               </dd>
-              <dt class="text-nota text-muted">saída prevista</dt>
+              <dt class="text-nota text-muted">
+                saída prevista
+              </dt>
             </div>
           </dl>
           <UButton
@@ -163,7 +203,9 @@ const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
           </UButton>
         </template>
         <template v-else>
-          <p class="text-legenda text-muted">Nenhuma vaga registrada agora.</p>
+          <p class="text-legenda text-muted">
+            Nenhuma vaga registrada agora.
+          </p>
           <UButton
             to="/vaga/registrar"
             block
@@ -175,9 +217,12 @@ const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
         </template>
       </UCard>
 
-      <UCard :ui="{ body: 'flex h-full flex-col gap-3 p-5 sm:p-5' }">
+      <UCard
+        class="col-span-3"
+        :ui="{ body: 'flex h-full flex-col gap-3 p-5 sm:p-5' }"
+      >
         <h2 class="etiqueta text-muted">
-          Da pesquisa · n={{ pesquisa?.respostasValidas ?? 0 }}
+          Pesquisa
         </h2>
         <ul class="flex flex-col gap-2">
           <li
@@ -191,16 +236,19 @@ const indicadores = computed(() => props.pesquisa?.indicadores ?? []);
               :tamanho="40"
               :espessura="5"
             />
-            <span class="text-legenda text-highlighted">{{
-              indicador.rotulo
-            }}</span>
+            <span
+              class="text-legenda text-highlighted first-letter:uppercase"
+            >{{ indicador.rotulo }}</span>
           </li>
         </ul>
         <ULink
           to="/pesquisa"
           class="mt-auto flex items-center gap-1 text-interface font-bold text-primary"
         >
-          Ver pesquisa <UIcon name="i-lucide-arrow-right" class="size-4" />
+          Ver pesquisa <UIcon
+            name="i-lucide-arrow-right"
+            class="size-4"
+          />
         </ULink>
       </UCard>
     </div>

@@ -18,7 +18,7 @@ const tons = computed<TomDoGrafico[]>(() => {
 })
 
 const opcao = computed(() => opcaoDeEmpilhado(cores.value, animar.value, {
-  grupos: props.grupos.map(grupo => `${grupo.grupo} (n=${grupo.base})`),
+  grupos: props.grupos.map(grupo => grupo.grupo),
   opcoes: opcoes.value,
   valores: props.grupos.map(grupo => grupo.opcoes.map(opcao => opcao.percentual)),
   tons: tons.value,

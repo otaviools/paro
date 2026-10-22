@@ -45,7 +45,7 @@ const distancia = computed(() => distanciaEmMetros(origem.value, destino.value))
         />
       </div>
     </div>
-    <div class="relative -mt-6 flex flex-1 flex-col gap-4 rounded-t-[24px] bg-default px-6 pt-3 pb-8 lg:mt-0 lg:rounded-none lg:px-0">
+    <div class="relative -mt-6 flex flex-1 flex-col gap-4 rounded-t-[24px] bg-default px-6 pt-3 pb-8 lg:mt-0 lg:flex-none lg:rounded-card lg:p-6 lg:ring-1 lg:ring-default">
       <span
         class="mx-auto block h-1 w-10 rounded-full bg-accented lg:hidden"
         aria-hidden="true"

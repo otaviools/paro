@@ -54,7 +54,7 @@
   --color-azul-800: #1E3A6E;
   --color-azul-900: #182F57;
   --color-azul-950: #0F1E38;
-  --color-asfalto-50: #FFFCF2;
+  --color-asfalto-50: #FFF9E3;
   --color-asfalto-100: #F3ECD4;
   --color-asfalto-200: #E6DEC5;
   --color-asfalto-300: #D9D3C0;
@@ -74,7 +74,23 @@
   --ui-primary: var(--ui-color-primary-600);
   --ui-radius: 0.625rem;
   --ui-bg: var(--paro-creme);
-  --ui-bg-muted: var(--paro-creme-suave);
+  --ui-bg-muted: #FFF0BF;
+  /*
+    Cores do Figma, frame "Parô | Visão Geral light/dark" (arquivo parô, nó 292:377 e 292:2).
+    A página fica um tom atrás dos cards; os cards e popovers continuam em --ui-bg.
+  */
+  --app-fundo-pagina: #FFF6D4;
+  --app-fundo-menu: #FFF8DD;
+  --app-campo: #FFF0BF;
+  --app-card: var(--ui-bg);
+  --app-fundo-destaque: var(--paro-asfalto);
+  --app-abas-indicador: var(--ui-primary);
+  --app-abas-indicador-texto: var(--ui-text-inverted);
+  --app-menu-ativo: var(--paro-ceu-claro);
+  --app-menu-ativo-fundo: var(--app-menu-ativo);
+  --app-menu-ativo-texto: var(--paro-asfalto);
+  --app-marcador-referencia: #2F5DB3;
+  --app-marcador-referencia-texto: var(--paro-creme);
   --ui-bg-elevated: var(--paro-creme-card);
   --ui-bg-accented: var(--paro-ceu-claro);
   --ui-text: var(--paro-asfalto);
@@ -104,6 +120,16 @@
   --ui-primary: var(--ui-color-primary-400);
   --ui-bg: var(--paro-asfalto);
   --ui-bg-muted: var(--paro-asfalto-suave);
+  --app-fundo-pagina: #181817;
+  --app-fundo-menu: #1D1C1B;
+  --app-campo: #2D2C27;
+  --app-card: #2D2C27;
+  --app-fundo-destaque: var(--app-card);
+  --app-abas-indicador: rgb(168 166 156 / 0.68);
+  --app-abas-indicador-texto: var(--paro-asfalto);
+  --app-menu-ativo: var(--paro-azul-barra-escuro);
+  --app-menu-ativo-fundo: linear-gradient(90deg, var(--paro-azul) 0%, #426599 100%);
+  --app-menu-ativo-texto: var(--paro-asfalto);
   --ui-bg-elevated: var(--paro-asfalto-card);
   --ui-bg-accented: var(--paro-ceu-noite);
   --ui-text: var(--paro-creme);
@@ -141,8 +167,26 @@
   background-color: var(--paro-asfalto-card);
 }
 
+.dark .superficie-destaque.destaque-com-borda {
+  background-color: var(--app-card);
+  box-shadow: inset 0 0 0 1px rgb(110 168 255 / 0.35);
+}
+
+/*
+  Tema claro sem branco: superfícies elevadas, ruas do mapa e anéis dos marcadores usam o creme da marca.
+  Controles e rótulos do mapa vêm do Figma. O escuro segue os tokens da marca.
+*/
+:root,
+:root[data-tema="claro"] {
+  --paro-creme-card: var(--paro-creme);
+  --paro-mapa-via: var(--paro-creme);
+  --paro-mapa-anel: var(--paro-creme);
+  --paro-mapa-controle: #FFF4CE;
+  --paro-mapa-marcador: #FFF3CE;
+}
+
 body {
-  background-color: var(--ui-bg);
+  background-color: var(--app-fundo-pagina);
   color: var(--ui-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -165,6 +209,17 @@ div.maplibregl-map {
 
 .maplibregl-ctrl-attrib a {
   color: inherit;
+}
+
+/*
+  No desktop a raiz de cada página é uma coluna flexível com a altura da tela (ver CascaDoApp).
+  Os blocos dela não encolhem: quando não cabem, a página rola por dentro em vez de cortar cards.
+  :where() zera a especificidade, então flex-1/min-h-0 das grades do Painel e da Pesquisa continuam valendo.
+*/
+@media (width >= 64rem) {
+  :where(main > * > *) {
+    flex-shrink: 0;
+  }
 }
 
 /* Tudo que é clicável mostra a mãozinha (o preflight do Tailwind 4 deixa botões com a seta padrão). */

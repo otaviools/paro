@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ percentual: number, rotulo: string, tamanho?: number, espessura?: number, semTexto?: boolean }>(), { tamanho: 88, espessura: 12, semTexto: false })
+const props = withDefaults(defineProps<{ percentual: number, rotulo: string, tamanho?: number, espessura?: number, semTexto?: boolean, corPorValor?: boolean }>(), { tamanho: 88, espessura: 12, semTexto: false, corPorValor: false })
 const { cores, animar } = useTemaDoGrafico()
 
-const opcao = computed(() => opcaoDeAnel(cores.value, animar.value, props.percentual, props.espessura))
+const opcao = computed(() => opcaoDeAnel(cores.value, animar.value, props.percentual, props.espessura, props.corPorValor))
 </script>
 
 <template>

@@ -46,8 +46,8 @@ const { menuAberto, alternarMenu } = useMenuLateral()
       to="/busca"
       icon="i-lucide-search"
       color="neutral"
-      variant="outline"
-      class="h-10 w-64 text-interface font-medium text-muted"
+      variant="soft"
+      class="h-10 w-64 bg-(--app-campo) text-interface font-medium text-muted hover:bg-(--app-campo)/80"
     >
       Buscar rua ou lugar
     </UButton>

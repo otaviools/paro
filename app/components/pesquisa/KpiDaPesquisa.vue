@@ -11,8 +11,8 @@ withDefaults(defineProps<{ valor: string, rotulo: string, guia: string, destaque
     :ui="{ content: 'h-auto max-w-64 py-2 text-legenda whitespace-normal' }"
   >
     <div
-      class="flex flex-col gap-1 rounded-alerta px-4 py-3 ring-1 ring-default outline-primary focus-visible:outline-2"
-      :class="destaque ? 'superficie-destaque ring-0' : 'bg-elevated'"
+      class="flex flex-col gap-1 rounded-alerta px-4 py-3 ring-1 ring-default outline-primary focus-visible:outline-2 dark:ring-0"
+      :class="destaque ? 'superficie-destaque ring-0' : 'bg-(--app-card)'"
       tabindex="0"
       :aria-label="`${rotulo}: ${valor}${total ? ' (total, sem recorte por grupo)' : ''}. ${guia}`"
     >

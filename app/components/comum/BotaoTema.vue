@@ -10,8 +10,8 @@ const escuro = computed(() => colorMode.value === 'dark')
       :icon="escuro ? 'i-lucide-sun' : 'i-lucide-moon'"
       :aria-label="escuro ? 'Usar tema claro' : 'Usar tema escuro'"
       color="neutral"
-      variant="outline"
-      class="size-10 justify-center"
+      variant="soft"
+      class="size-10 justify-center bg-(--app-campo) hover:bg-(--app-campo)/80"
       @click="alternarTema"
     />
     <template #fallback>
