@@ -15,6 +15,10 @@ const secoes = [
     texto: 'Para entrar no app, você verifica o e-mail uma vez em cada aparelho. Guardamos só uma versão embaralhada dele (hash com chave secreta), nunca o endereço. Ela serve para liberar a entrada, limitar um relato por pessoa, calcular a sua reputação, que sobe quando seus relatos batem com as contagens de campo, e mostrar a sua vaga e o seu histórico em qualquer aparelho onde você verificar o mesmo e-mail. O código de verificação vale 10 minutos.',
   },
   {
+    titulo: 'Rotas no mapa',
+    texto: 'Para desenhar o caminho em Como chegar e em Voltar até o carro, o servidor do Parô consulta um serviço de rotas do OpenStreetMap (OSRM). Ele envia só o ponto de partida arredondado a cerca de 100 m e o destino na rua, sem nenhum identificador seu. A rota calculada fica em cache por até 10 minutos, sem ligação com você ou com o aparelho. O ponto exato da vaga nunca é enviado: o último trecho até o carro é desenhado só neste aparelho.',
+  },
+  {
     titulo: 'Base legal',
     texto: 'Consentimento, pedido na primeira visita e ao verificar o e-mail. Você pode mudar as opções de localização a qualquer momento em Ajustes. A localização só é lida quando a opção está ligada.',
   },
@@ -39,7 +43,7 @@ const secoes = [
       titulo="Termos e privacidade"
       subtitulo="Como o Parô trata os seus dados"
     />
-    <div class="flex flex-col gap-6 lg:grid lg:min-h-0 lg:flex-1 lg:auto-rows-fr lg:grid-cols-3 lg:gap-4 lg:p-6">
+    <div class="flex flex-col gap-6 lg:grid lg:min-h-0 lg:flex-1 lg:auto-rows-fr lg:grid-cols-4 lg:gap-4 lg:p-6">
       <CabecalhoDeTarefa
         titulo="Termos e privacidade"
         voltar-para="/ajustes"

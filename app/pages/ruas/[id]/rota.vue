@@ -15,8 +15,11 @@ const destino = computed<[number, number]>(() => {
   if (!detalhe.value) return origem.value
   return detalhe.value.destino ?? verticeMaisProximo(origem.value, detalhe.value.trajeto)
 })
-const distancia = computed(() => distanciaEmMetros(origem.value, destino.value))
-const caminho = computed<[number, number][]>(() => [origem.value, [destino.value[0], origem.value[1]], destino.value])
+// Rota pelas ruas (OSRM). Sem ela, o mapa mostra a linha reta e o texto avisa que é em linha reta.
+const rotaPelasRuas = useRota(origem, () => (detalhe.value ? destino.value : null), 'carro')
+const caminho = rotaPelasRuas.pontos
+const distancia = computed(() => rotaPelasRuas.distanciaM.value ?? distanciaEmMetros(origem.value, destino.value))
+const minutos = computed(() => rotaPelasRuas.duracaoMin.value ?? minutosDeCarro(distancia.value))
 
 const mapaDaRua = computed(() => {
   if (!mapa.value) return null
@@ -38,7 +41,10 @@ const mapaDaRua = computed(() => {
         :popup="false"
         @localizar="localizar"
       >
-        <MapRoute :pontos="caminho" />
+        <MapRoute
+          :pontos="caminho"
+          enquadrar
+        />
       </MapaDeRuas>
       <div class="absolute top-12 left-6 z-10 lg:top-4 lg:left-4">
         <CabecalhoDeTarefa
@@ -58,7 +64,7 @@ const mapaDaRua = computed(() => {
           Como chegar
         </h1>
         <p class="text-interface text-muted">
-          {{ detalhe.previsao.nome }} · {{ formatarDistancia(distancia) }} · cerca de {{ minutosDeCarro(distancia) }} min de carro
+          {{ detalhe.previsao.nome }} · {{ formatarDistancia(distancia) }}{{ rotaPelasRuas.pelasRuas.value ? '' : ' em linha reta' }} · cerca de {{ minutos }} min de carro
         </p>
         <p
           v-if="!posicao"

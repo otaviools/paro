@@ -8,13 +8,15 @@ const props = withDefaults(defineProps<{
   posicao?: [number, number] | null
   rota?: boolean
   controles?: boolean
-}>(), { posicao: null, rota: true, controles: false })
+  caminho?: [number, number][]
+}>(), { posicao: null, rota: true, controles: false, caminho: undefined })
 
 defineEmits<{ localizar: [] }>()
 
 const pontoDoCarro = computed<[number, number]>(() => props.ponto ?? pontoMedio(props.trajeto))
 const limites = computed(() => limitesDosPontos([pontoDoCarro.value, ...(props.posicao ? [props.posicao] : [])]))
-const caminho = computed<[number, number][]>(() => (props.posicao ? [props.posicao, [pontoDoCarro.value[0], props.posicao[1]], pontoDoCarro.value] : []))
+// Quem usa o mapa passa o caminho pelas ruas; sem ele, liga a posição ao carro em linha reta.
+const caminho = computed<[number, number][]>(() => props.caminho ?? (props.posicao ? [props.posicao, pontoDoCarro.value] : []))
 </script>
 
 <template>
@@ -28,6 +30,7 @@ const caminho = computed<[number, number][]>(() => (props.posicao ? [props.posic
       v-if="rota && caminho.length"
       :pontos="caminho"
       tipo="pontilhada"
+      enquadrar
     />
     <MapMarker
       :posicao="pontoDoCarro"

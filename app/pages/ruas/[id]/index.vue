@@ -39,13 +39,15 @@ const mapaDaRua = computed(() => {
   }
 })
 
-const caminho = computed<[number, number][]>(() => {
-  if (!detalhe.value) return []
-  const destino
-    = detalhe.value.destino
-      ?? verticeMaisProximo(referencia.value, detalhe.value.trajeto)
-  return [referencia.value, [destino[0], referencia.value[1]], destino]
+// Rota pelas ruas da referência (ESAMC) até a rua, sem nenhum dado da pessoa.
+const destinoDaRua = computed<[number, number] | null>(() => {
+  if (!detalhe.value) return null
+  return (
+    detalhe.value.destino
+    ?? verticeMaisProximo(referencia.value, detalhe.value.trajeto)
+  )
 })
+const { pontos: caminho } = useRota(referencia, destinoDaRua, 'carro')
 </script>
 
 <template>
@@ -64,7 +66,10 @@ const caminho = computed<[number, number][]>(() => {
             :popup="false"
             :controles="false"
           >
-            <MapRoute :pontos="caminho" />
+            <MapRoute
+              :pontos="caminho"
+              enquadrar
+            />
           </MapaDeRuas>
           <div class="absolute top-12 left-6 z-10 flex items-center gap-3">
             <CabecalhoDeTarefa
