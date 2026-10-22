@@ -17,7 +17,15 @@ onMounted(async () => {
 
 const destino = computed<[number, number]>(() => ponto.value ?? (vagaAtual.value ? pontoMedio(vagaAtual.value.trajeto) : [0, 0]))
 const origem = computed<[number, number]>(() => posicao.value ?? ((areaAtual.value?.referencia.coordinates ?? destino.value) as [number, number]))
-const distancia = computed(() => distanciaEmMetros(origem.value, destino.value))
+// A pé pelas ruas até o meio da rua da vaga (o servidor já sabe a rua, nunca o ponto exato);
+// o último trecho, até o carro, é ligado só aqui no aparelho.
+const meioDaRua = computed<[number, number] | null>(() => (vagaAtual.value ? pontoMedio(vagaAtual.value.trajeto) : null))
+const rotaAteARua = useRota(origem, meioDaRua, 'a_pe')
+const caminho = computed<[number, number][]>(() => (rotaAteARua.pelasRuas.value ? [...rotaAteARua.pontos.value, destino.value] : [origem.value, destino.value]))
+const distancia = computed(() => {
+  const ateARua = rotaAteARua.distanciaM.value
+  return ateARua !== null && meioDaRua.value ? ateARua + distanciaEmMetros(meioDaRua.value, destino.value) : distanciaEmMetros(origem.value, destino.value)
+})
 </script>
 
 <template>
@@ -30,6 +38,7 @@ const distancia = computed(() => distanciaEmMetros(origem.value, destino.value))
         :trajeto="vagaAtual.trajeto"
         :ponto="ponto"
         :posicao="origem"
+        :caminho="caminho"
         :rotulo-do-carro="`Você parou aqui · ${formatarHora(vagaAtual.chegada)}`"
         controles
         @localizar="localizar"
@@ -52,7 +61,7 @@ const distancia = computed(() => distanciaEmMetros(origem.value, destino.value))
       />
       <h1 class="flex flex-wrap items-baseline gap-x-3">
         <span class="text-numero font-extrabold text-highlighted">{{ formatarDistancia(distancia) }}</span>
-        <span class="text-interface text-muted">cerca de {{ minutosAPe(distancia) }} min a pé até o carro</span>
+        <span class="text-interface text-muted">{{ rotaAteARua.pelasRuas.value ? '' : 'em linha reta · ' }}cerca de {{ minutosAPe(distancia) }} min a pé até o carro</span>
       </h1>
       <p class="text-interface text-muted">
         {{ vagaAtual.nomeDaRua }} · perto da {{ areaAtual?.nomeDaReferencia ?? 'ESAMC' }}

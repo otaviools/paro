@@ -1,11 +1,27 @@
 <script setup lang="ts">
+import { usePreferredReducedMotion } from '@vueuse/core'
 import type { GeoJSONSource } from 'maplibre-gl'
 import type { Feature, LineString } from 'geojson'
 
 const props = withDefaults(defineProps<{
   pontos: [number, number][]
   tipo?: 'solida' | 'pontilhada'
-}>(), { tipo: 'solida' })
+  /** Reenquadra o mapa no traçado sempre que ele muda (a rota pelas ruas chega depois do mapa). */
+  enquadrar?: boolean
+}>(), { tipo: 'solida', enquadrar: false })
+
+const MARGEM_DO_ENQUADRAMENTO = 64
+const movimento = usePreferredReducedMotion()
+
+function enquadrarNoTracado() {
+  const instancia = mapa?.value
+  if (!props.enquadrar || !instancia || props.pontos.length < 2) return
+  instancia.fitBounds(limitesDosPontos(props.pontos), {
+    padding: MARGEM_DO_ENQUADRAMENTO,
+    maxZoom: 17,
+    duration: movimento.value === 'reduce' ? 0 : 600,
+  })
+}
 
 const mapa = inject(chaveDoMapa)
 const id = `rota-${useId()}`
@@ -31,9 +47,13 @@ onMounted(() => {
       ...(props.tipo === 'pontilhada' && { 'line-dasharray': [0.1, 2] }),
     },
   })
+  enquadrarNoTracado()
 })
 
-watch(linha, dados => mapa?.value?.getSource<GeoJSONSource>(id)?.setData(dados))
+watch(linha, (dados) => {
+  mapa?.value?.getSource<GeoJSONSource>(id)?.setData(dados)
+  enquadrarNoTracado()
+})
 
 onBeforeUnmount(() => {
   const instancia = mapa?.value
