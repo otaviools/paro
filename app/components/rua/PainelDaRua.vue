@@ -2,7 +2,15 @@
 import { formatarChance, leituraDoEstado } from '#shared/utils/ocupacao'
 import type { DetalheRua, PontoDaNoite } from '#shared/types/previsao'
 
-withDefaults(defineProps<{ detalhe: DetalheRua, noite: PontoDaNoite[], completo?: boolean, momento?: string }>(), { completo: false, momento: 'agora' })
+withDefaults(
+  defineProps<{
+    detalhe: DetalheRua
+    noite: PontoDaNoite[]
+    completo?: boolean
+    momento?: string
+  }>(),
+  { completo: false, momento: 'agora' },
+)
 </script>
 
 <template>
@@ -18,17 +26,38 @@ withDefaults(defineProps<{ detalhe: DetalheRua, noite: PontoDaNoite[], completo?
             name="i-lucide-clock"
             class="size-4"
           />
-          medido às {{ formatarHora(detalhe.previsao.medidoEm) }}
+          {{ origemDaChance(detalhe.previsao) }}
+        </span>
+        <span
+          v-if="detalhe.capacidade"
+          class="flex items-center gap-1.5 text-legenda text-muted"
+        >
+          <UIcon
+            name="i-lucide-car"
+            class="size-4"
+          />
+          cerca de {{ detalhe.capacidade }} vagas na rua
         </span>
       </div>
+      <RelatoRecente
+        v-if="detalhe.previsao.relatoRecente"
+        :relato="detalhe.previsao.relatoRecente"
+      />
     </div>
     <div>
-      <p class="text-percentual font-extrabold tracking-tight text-highlighted lg:text-hero">
+      <p
+        class="text-percentual font-extrabold tracking-tight text-highlighted lg:text-hero"
+      >
         {{ formatarChance(detalhe.previsao.chance) }}
       </p>
       <p class="text-corpo text-muted">
         de chance {{ momento }} · {{ leituraDoEstado[detalhe.previsao.estado] }}
       </p>
+      <SeloDeConfianca
+        v-if="detalhe.previsao.confianca"
+        :confianca="detalhe.previsao.confianca"
+        class="mt-2"
+      />
     </div>
     <USeparator v-if="completo" />
     <section class="flex flex-col gap-3">
@@ -51,8 +80,10 @@ withDefaults(defineProps<{ detalhe: DetalheRua, noite: PontoDaNoite[], completo?
             :percentual="detalhe.citacao.percentual"
             rotulo="dos respondentes costumam conseguir vaga nesta rua"
             :tamanho="72"
+            cor-por-valor
           />
-          <span class="text-legenda text-highlighted">dos {{ detalhe.citacao.base }} respondentes costumam conseguir vaga nesta rua</span>
+          <span class="text-legenda text-highlighted">dos {{ detalhe.citacao.base }} respondentes costumam conseguir vaga
+            nesta rua</span>
         </p>
       </section>
       <section
@@ -62,7 +93,9 @@ withDefaults(defineProps<{ detalhe: DetalheRua, noite: PontoDaNoite[], completo?
         <h3 class="etiqueta text-primary">
           Alternativa {{ momento }}
         </h3>
-        <UCard :ui="{ root: 'rounded-lista', body: 'px-4 py-0 sm:px-4 sm:py-0' }">
+        <UCard
+          :ui="{ root: 'rounded-lista', body: 'px-4 py-0 sm:px-4 sm:py-0' }"
+        >
           <CardRua
             :previsao="detalhe.alternativa"
             :to="`/ruas/${detalhe.alternativa.ruaId}`"
@@ -81,7 +114,9 @@ withDefaults(defineProps<{ detalhe: DetalheRua, noite: PontoDaNoite[], completo?
         Como chegar
       </UButton>
       <UButton
-        :to="detalhe.alternativa ? `/ruas/${detalhe.alternativa.ruaId}` : '/ruas'"
+        :to="
+          detalhe.alternativa ? `/ruas/${detalhe.alternativa.ruaId}` : '/ruas'
+        "
         size="xl"
         color="neutral"
         variant="outline"
@@ -91,5 +126,9 @@ withDefaults(defineProps<{ detalhe: DetalheRua, noite: PontoDaNoite[], completo?
         Alternativas
       </UButton>
     </div>
+    <RelatarRua
+      :rua-id="detalhe.previsao.ruaId"
+      :nome="detalhe.previsao.nome"
+    />
   </div>
 </template>

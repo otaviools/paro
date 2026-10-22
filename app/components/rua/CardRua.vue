@@ -32,13 +32,24 @@ withDefaults(defineProps<{
       <p class="truncate text-legenda font-medium text-muted">
         {{ rotuloDoEstado[previsao.estado] }} · {{ detalhe === 'leitura' ? leituraDoEstado[previsao.estado] : `a ${previsao.distanciaM} m` }}
       </p>
+      <RelatoRecente
+        v-if="previsao.relatoRecente"
+        :relato="previsao.relatoRecente"
+        class="mt-0.5 text-nota!"
+      />
+      <SeloDeConfianca
+        v-else-if="previsao.confianca"
+        :confianca="previsao.confianca"
+        compacto
+        class="mt-0.5 text-nota!"
+      />
     </div>
     <div class="text-right">
       <p class="text-card font-extrabold text-highlighted">
         {{ formatarChance(previsao.chance) }}
       </p>
       <p class="text-nota text-muted">
-        {{ previsao.medidoEm ? `medido às ${formatarHora(previsao.medidoEm)}` : 'chance' }}
+        {{ origemDaChance(previsao) }}
       </p>
     </div>
     <UIcon

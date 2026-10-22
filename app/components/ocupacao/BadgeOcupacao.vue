@@ -16,7 +16,7 @@ const texto = computed(() => {
 <template>
   <span
     class="inline-flex h-7 items-center gap-2 rounded-badge border px-2.5 text-legenda font-bold whitespace-nowrap"
-    :class="invertido ? 'border-(--paro-creme)/40 text-(--paro-creme) [&_svg]:text-(--paro-creme)' : 'border-accented bg-elevated text-highlighted'"
+    :class="invertido ? 'border-(--paro-creme)/35 text-(--paro-creme) [&_svg]:text-(--paro-creme)' : 'border-accented bg-elevated text-highlighted'"
   >
     <PadraoOcupacao
       :estado="estado"

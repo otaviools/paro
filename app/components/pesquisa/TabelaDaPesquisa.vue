@@ -26,7 +26,7 @@ const filtradas = computed(() => {
     />
     <div class="-mx-5 min-h-0 flex-1 overflow-auto border-t border-default">
       <table class="w-full min-w-160 text-left text-legenda">
-        <thead class="sticky top-0 z-10 bg-elevated">
+        <thead class="sticky top-0 z-10 bg-default">
           <tr class="border-b border-default text-muted">
             <th class="etiqueta py-3 pr-3 pl-5 font-bold">
               Nº

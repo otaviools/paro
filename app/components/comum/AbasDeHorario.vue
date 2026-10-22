@@ -12,7 +12,7 @@ const { selecionado, abas, hoje } = useHorario()
       color="primary"
       class="min-w-0 flex-1"
       :class="compacto ? 'lg:w-84 lg:flex-none' : ''"
-      :ui="{ list: 'h-11 rounded-alerta bg-muted p-1', trigger: 'h-9 flex-1 text-interface font-semibold data-[state=active]:font-bold', indicator: 'rounded-botao bg-primary' }"
+      :ui="{ list: 'h-11 rounded-alerta bg-muted p-1 dark:bg-(--app-campo)', trigger: 'h-9 flex-1 text-interface font-semibold data-[state=active]:font-bold data-[state=active]:text-(--app-abas-indicador-texto)', indicator: 'rounded-botao bg-(--app-abas-indicador)' }"
       aria-label="Horário da previsão"
     />
     <ClientOnly v-if="mostrarDia">

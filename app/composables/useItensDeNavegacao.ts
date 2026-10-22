@@ -19,6 +19,7 @@ export function useItensDeNavegacao() {
   ])
 
   const itemDeAjustes = computed<NavigationMenuItem[]>(() => [
+    { label: 'Admin', icon: 'i-lucide-shield-user', to: '/admin', active: ativo('/admin') },
     { label: 'Ajustes', icon: 'i-lucide-settings', to: '/ajustes', active: ativo('/ajustes') },
   ])
 

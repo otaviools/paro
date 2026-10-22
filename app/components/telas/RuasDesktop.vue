@@ -2,14 +2,15 @@
 import type { DetalheRua, PontoDaNoite } from '#shared/types/previsao'
 import type { LinhaDaTabela } from '~/components/rua/TabelaDeRuas.vue'
 
-defineProps<{
+withDefaults(defineProps<{
   linhas: LinhaDaTabela[]
   selecionada: string | undefined
   detalhe: DetalheRua | null
   noite: PontoDaNoite[]
   contraste: { titulo: string, texto: string } | null
   base: number
-}>()
+  aPartirDeVoce?: boolean
+}>(), { aPartirDeVoce: false })
 
 const ordem = defineModel<'chance' | 'distancia'>('ordem', { required: true })
 defineEmits<{ selecionar: [ruaId: string] }>()
@@ -31,13 +32,22 @@ const opcoesDeOrdem = [
           </h2>
           <LegendaOcupacao />
         </div>
-        <USelect
-          v-model="ordem"
-          :items="opcoesDeOrdem"
-          icon="i-lucide-arrow-down-up"
-          class="w-56"
-          aria-label="Ordenar ruas"
-        />
+        <div class="flex flex-col items-end gap-1">
+          <USelect
+            v-model="ordem"
+            :items="opcoesDeOrdem"
+            icon="i-lucide-arrow-down-up"
+            class="w-56"
+            aria-label="Ordenar ruas"
+          />
+          <p
+            v-if="ordem === 'distancia'"
+            class="text-nota text-muted"
+            aria-live="polite"
+          >
+            {{ aPartirDeVoce ? 'Distância a partir de você' : 'Distância a partir da ESAMC' }}
+          </p>
+        </div>
       </div>
       <div class="min-h-0 flex-1 overflow-y-auto">
         <TabelaDeRuas

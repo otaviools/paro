@@ -41,7 +41,6 @@ const opcoes = computed(() => props.pergunta.grupos[0]?.opcoes ?? [])
           </div>
         </template>
       </UPopover>
-      <span class="rounded-full bg-muted px-2 py-0.5 text-nota font-bold text-muted">n={{ pergunta.grupos[0]?.base }}</span>
     </header>
     <div class="flex min-h-0 flex-1 flex-col">
       <GraficoBarras

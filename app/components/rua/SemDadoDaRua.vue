@@ -42,6 +42,10 @@ defineProps<{ previsao: PrevisaoRua, faixa: string, maisPerto: PrevisaoRua | und
         Sugerir esta rua para medição
       </UButton>
     </EstadoVazio>
+    <RelatarRua
+      :rua-id="previsao.ruaId"
+      :nome="previsao.nome"
+    />
     <section
       v-if="maisPerto"
       class="flex flex-col gap-3"

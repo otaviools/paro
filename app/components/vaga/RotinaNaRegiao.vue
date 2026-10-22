@@ -13,7 +13,7 @@ withDefaults(defineProps<{ rotina: RotinaNaRegiao, caixas?: boolean }>(), { caix
       <dd class="text-stat font-extrabold text-highlighted">
         {{ rotina.chegada ?? '—' }}
       </dd>
-      <dt class="text-nota text-muted">
+      <dt class="text-nota text-muted lg:first-letter:uppercase">
         chegada
       </dt>
     </div>
@@ -24,7 +24,7 @@ withDefaults(defineProps<{ rotina: RotinaNaRegiao, caixas?: boolean }>(), { caix
       <dd class="text-stat font-extrabold text-highlighted">
         {{ rotina.saida ?? '—' }}
       </dd>
-      <dt class="text-nota text-muted">
+      <dt class="text-nota text-muted lg:first-letter:uppercase">
         saída
       </dt>
     </div>
@@ -35,7 +35,7 @@ withDefaults(defineProps<{ rotina: RotinaNaRegiao, caixas?: boolean }>(), { caix
       <dd class="text-stat font-extrabold text-highlighted">
         {{ rotina.diasPorSemana }} {{ rotina.diasPorSemana === 1 ? 'dia' : 'dias' }}
       </dd>
-      <dt class="text-nota text-muted">
+      <dt class="text-nota text-muted lg:first-letter:uppercase">
         por semana
       </dt>
     </div>
