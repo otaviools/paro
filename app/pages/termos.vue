@@ -24,7 +24,7 @@ const secoes = [
   },
   {
     titulo: 'Por quanto tempo',
-    texto: 'Depois de 24 horas, cada relato perde o vínculo com você e com o aparelho e fica só como contagem anônima. O histórico de vagas é apagado sozinho depois de 90 dias. As medições de campo e os relatos anônimos usados na previsão não têm dono e continuam guardados.',
+    texto: 'Entre 24 e 48 horas depois de enviado, cada relato perde o vínculo com você e com o aparelho e fica só como contagem anônima. O histórico de vagas é apagado sozinho depois de 90 dias. As medições de campo e os relatos anônimos usados na previsão não têm dono e continuam guardados.',
   },
   {
     titulo: 'Seu controle',
